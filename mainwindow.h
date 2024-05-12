@@ -24,7 +24,6 @@ private:
     int uniqueID = 0;
 
 private:
-    QString databasePath = "D:\\project\\QT\\TimeManagement"; //数据库路径
     QSqlDatabase db;
     QSqlQueryModel *queryModelUnfished;
     QSqlQueryModel *queryModelFished;
@@ -34,6 +33,8 @@ private:
     QItemSelectionModel *selectionModelAll;
 
 private:
+    void openInitialFile(); //打开初始
+    void newDatabaseFile(QString fileName); //新建数据库文件
     void openTable(); //打开表格
     void updateRecord(int id); //修改特定id的数据
     void deleteRecord(int id); //删除特定id的数据
