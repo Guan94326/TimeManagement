@@ -8,7 +8,6 @@
 #include "urecordeditdialog.h"
 #include <QSqlQuery>
 
-
 void MainWindow::openTable()
 {
     //初始化
