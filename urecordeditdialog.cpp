@@ -2,6 +2,7 @@
 #include "ui_urecordeditdialog.h"
 #include <QInputDialog>
 #include <QSqlRecord>
+#include "utimeeditdialog.h"
 
 QSqlRecord uRecordEditDialog::getRecord()
 {
@@ -49,5 +50,29 @@ void uRecordEditDialog::on_pushButton_delete_clicked()
     int id = uniqueID + 1;
     emit recordDelete(id);
     ui->pushButton_cancel->click();
+}
+
+
+void uRecordEditDialog::on_pushButton_set_begin_clicked()
+{
+    uTimeEditDialog *dialog = new uTimeEditDialog(this);
+    dialog->setDateTime(ui->dateTimeEdit_begindate->dateTime());
+    if (dialog->exec() == QDialog::Accepted) {
+        QDateTime dateTime = dialog->getDateTime();
+        ui->dateTimeEdit_begindate->setDateTime(dateTime);
+    }
+    delete dialog;
+}
+
+
+void uRecordEditDialog::on_pushButton_set_end_clicked()
+{
+    uTimeEditDialog *dialog = new uTimeEditDialog(this);
+    dialog->setDateTime(ui->dateTimeEdit_enddate->dateTime());
+    if (dialog->exec() == QDialog::Accepted) {
+        QDateTime dateTime = dialog->getDateTime();
+        ui->dateTimeEdit_enddate->setDateTime(dateTime);
+    }
+    delete dialog;
 }
 

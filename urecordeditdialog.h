@@ -33,6 +33,10 @@ signals:
 private slots:
     void on_pushButton_delete_clicked();
 
+    void on_pushButton_set_begin_clicked();
+
+    void on_pushButton_set_end_clicked();
+
 private:
     Ui::uRecordEditDialog *ui;
 };

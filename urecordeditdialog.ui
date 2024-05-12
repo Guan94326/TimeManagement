@@ -70,7 +70,30 @@
         </widget>
        </item>
        <item>
-        <widget class="QDateTimeEdit" name="dateTimeEdit_begindate"/>
+        <widget class="QDateTimeEdit" name="dateTimeEdit_begindate">
+         <property name="buttonSymbols">
+          <enum>QAbstractSpinBox::NoButtons</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_set_begin">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>设置</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -90,7 +113,30 @@
         </widget>
        </item>
        <item>
-        <widget class="QDateTimeEdit" name="dateTimeEdit_enddate"/>
+        <widget class="QDateTimeEdit" name="dateTimeEdit_enddate">
+         <property name="buttonSymbols">
+          <enum>QAbstractSpinBox::NoButtons</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_set_end">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>设置</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
