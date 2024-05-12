@@ -5,6 +5,8 @@
 #include <QMessageBox>
 #include <QSqlQueryModel>
 #include <QSqlRecord>
+#include "urecordeditdialog.h"
+
 
 void MainWindow::openTable()
 {
@@ -17,6 +19,11 @@ void MainWindow::openTable()
     selectionModelFinished = new QItemSelectionModel(queryModelFished, this);
     ui->tableView_show_finished->setModel(queryModelFished);
     ui->tableView_show_finished->setSelectionModel(selectionModelFinished);
+    queryModelAll = new QSqlQueryModel(this);
+    selectionModelAll = new QItemSelectionModel(queryModelAll, this);
+
+    //保证主键唯一
+    uniqueID = queryModelAll->rowCount();
 
     //设置不可编辑和行选择
     ui->tableView_show_finished->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -25,17 +32,26 @@ void MainWindow::openTable()
     ui->tableView_show_unfinished->setSelectionBehavior(QAbstractItemView::SelectRows);
 
     //查询语句
-    queryModelUnfished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END FROM schedule WHERE FINISHED = 'N';");
-    queryModelFished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END FROM schedule WHERE FINISHED = 'Y';");
+    queryModelUnfished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule WHERE FINISHED = 0;");
+    queryModelFished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule WHERE FINISHED = 1;");
+    queryModelAll->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule;");
+
+    //隐藏数据
+    ui->tableView_show_unfinished->setColumnHidden(DETAIL, true);
+    ui->tableView_show_unfinished->setColumnHidden(FINISHED, true);
+    ui->tableView_show_unfinished->setColumnHidden(ID, true);
+    ui->tableView_show_finished->setColumnHidden(DETAIL, true);
+    ui->tableView_show_finished->setColumnHidden(FINISHED, true);
+    ui->tableView_show_finished->setColumnHidden(ID, true);
 
     //设置列宽
     int nameWidth = ui->tableView_show_unfinished->width() - 400;
-    ui->tableView_show_unfinished->setColumnWidth(0, nameWidth);
-    ui->tableView_show_unfinished->setColumnWidth(1, 180);
-    ui->tableView_show_unfinished->setColumnWidth(2, 180);
-    ui->tableView_show_finished->setColumnWidth(0, nameWidth);
-    ui->tableView_show_finished->setColumnWidth(1, 180);
-    ui->tableView_show_finished->setColumnWidth(2, 180);
+    ui->tableView_show_unfinished->setColumnWidth(NAME, nameWidth);
+    ui->tableView_show_unfinished->setColumnWidth(DATE_BEGIN, 180);
+    ui->tableView_show_unfinished->setColumnWidth(DATE_END, 180);
+    ui->tableView_show_finished->setColumnWidth(NAME, nameWidth);
+    ui->tableView_show_finished->setColumnWidth(DATE_BEGIN, 180);
+    ui->tableView_show_finished->setColumnWidth(DATE_END, 180);
 
     //设置组件为可用状态
     ui->checkBox_u_begin->setEnabled(true);
@@ -44,6 +60,7 @@ void MainWindow::openTable()
     ui->checkBox_begin->setEnabled(true);
     ui->checkBox_end->setEnabled(true);
     ui->checkBox_name->setEnabled(true);
+    ui->action_add->setEnabled(true);
 
     //设置表头
     QSqlRecord headerRecord_u = queryModelUnfished->record();
@@ -127,5 +144,28 @@ void MainWindow::on_checkBox_begin_clicked(bool checked)
 void MainWindow::on_checkBox_end_clicked(bool checked)
 {
     ui->tableView_show_finished->setColumnHidden(2, !checked);
+}
+
+
+void MainWindow::on_tableView_show_unfinished_doubleClicked(const QModelIndex &index)
+{
+    QSqlRecord editRecord = queryModelUnfished->record(index.row());
+    qDebug() << editRecord;
+}
+
+
+void MainWindow::on_tableView_show_finished_doubleClicked(const QModelIndex &index)
+{
+    QSqlRecord editRecord = queryModelFished->record(index.row());
+    qDebug() << editRecord;
+}
+
+
+void MainWindow::on_action_add_triggered()
+{
+    QSqlRecord record = queryModelAll->record();
+    uRecordEditDialog *dialog = new uRecordEditDialog(this);
+    dialog->setRecord(record, uniqueID);
+    dialog->show();
 }
 

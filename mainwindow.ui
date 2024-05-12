@@ -206,6 +206,9 @@
    </layout>
   </widget>
   <widget class="QToolBar" name="toolBar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
@@ -216,6 +219,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_open_new_database"/>
+   <addaction name="action_add"/>
    <addaction name="action_exit"/>
   </widget>
   <action name="action_open_new_database">
@@ -229,6 +233,17 @@
   <action name="action_exit">
    <property name="text">
     <string>退出</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::NoRole</enum>
+   </property>
+  </action>
+  <action name="action_add">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>添加</string>
    </property>
    <property name="menuRole">
     <enum>QAction::NoRole</enum>

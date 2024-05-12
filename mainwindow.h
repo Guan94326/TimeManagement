@@ -18,12 +18,20 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
+    enum tableViewColumnIndex {
+        NAME = 0, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID
+    };
+    int uniqueID = 0;
+
+private:
     QString databasePath = "D:\\project\\QT\\TimeManagement"; //数据库路径
     QSqlDatabase db;
     QSqlQueryModel *queryModelUnfished;
     QSqlQueryModel *queryModelFished;
+    QSqlQueryModel *queryModelAll;
     QItemSelectionModel *selectionModelUnfinished;
     QItemSelectionModel *selectionModelFinished;
+    QItemSelectionModel *selectionModelAll;
 
 private:
     void openTable(); //打开表格
@@ -46,6 +54,12 @@ private slots:
     void on_checkBox_begin_clicked(bool checked);
 
     void on_checkBox_end_clicked(bool checked);
+
+    void on_tableView_show_unfinished_doubleClicked(const QModelIndex &index);
+
+    void on_tableView_show_finished_doubleClicked(const QModelIndex &index);
+
+    void on_action_add_triggered();
 
 private:
     Ui::MainWindow *ui;
