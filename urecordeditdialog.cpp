@@ -1,5 +1,7 @@
 #include "urecordeditdialog.h"
 #include "ui_urecordeditdialog.h"
+#include <QInputDialog>
+
 
 uRecordEditDialog::uRecordEditDialog(QWidget *parent)
     : QDialog(parent)

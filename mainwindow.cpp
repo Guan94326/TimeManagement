@@ -29,13 +29,13 @@ void MainWindow::openTable()
     queryModelFished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END FROM schedule WHERE FINISHED = 'Y';");
 
     //设置列宽
-    int nameWidth = ui->tableView_show_unfinished->width() - 500;
+    int nameWidth = ui->tableView_show_unfinished->width() - 400;
     ui->tableView_show_unfinished->setColumnWidth(0, nameWidth);
-    ui->tableView_show_unfinished->setColumnWidth(1, 240);
-    ui->tableView_show_unfinished->setColumnWidth(2, 240);
+    ui->tableView_show_unfinished->setColumnWidth(1, 180);
+    ui->tableView_show_unfinished->setColumnWidth(2, 180);
     ui->tableView_show_finished->setColumnWidth(0, nameWidth);
-    ui->tableView_show_finished->setColumnWidth(1, 240);
-    ui->tableView_show_finished->setColumnWidth(2, 240);
+    ui->tableView_show_finished->setColumnWidth(1, 180);
+    ui->tableView_show_finished->setColumnWidth(2, 180);
 
     //设置组件为可用状态
     ui->checkBox_u_begin->setEnabled(true);
