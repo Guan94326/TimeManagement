@@ -35,6 +35,8 @@ private:
 
 private:
     void openTable(); //打开表格
+    void updateRecord(int id); //修改特定id的数据
+    void deleteRecord(int id); //删除特定id的数据
 
 public:
     MainWindow(QWidget *parent = nullptr);
@@ -60,6 +62,9 @@ private slots:
     void on_tableView_show_finished_doubleClicked(const QModelIndex &index);
 
     void on_action_add_triggered();
+
+private slots:
+    void on_record_delete(int id);
 
 private:
     Ui::MainWindow *ui;

@@ -22,9 +22,14 @@ void uRecordEditDialog::setRecord(const QSqlRecord &newRecord, int cur_uniqueID)
     ui->dateTimeEdit_begindate->setDateTime(record.value("DATE_BEGIN").toDateTime());
     ui->dateTimeEdit_enddate->setDateTime(record.value("DATE_END").toDateTime());
     ui->plainTextEdit_detail->setPlainText(record.value("DETAIL").toString());
-    bool isNo = record.value("FINISH").toBool();
+    int isNo = record.value("FINISHED").toBool();
     ui->radioButton_y->setChecked(isNo);
     ui->radioButton_n->setChecked(!isNo);
+}
+
+void uRecordEditDialog::setDeleteEnabled(bool is)
+{
+    ui->pushButton_delete->setEnabled(is);
 }
 
 uRecordEditDialog::uRecordEditDialog(QWidget *parent)
@@ -38,3 +43,11 @@ uRecordEditDialog::~uRecordEditDialog()
 {
     delete ui;
 }
+
+void uRecordEditDialog::on_pushButton_delete_clicked()
+{
+    int id = uniqueID + 1;
+    emit recordDelete(id);
+    ui->pushButton_cancel->click();
+}
+

@@ -80,6 +80,64 @@ void MainWindow::openTable()
     uniqueID = queryModelAll->rowCount();
 }
 
+void MainWindow::updateRecord(int id)
+{
+    queryModelAll->setQuery("SELECT * FROM schedule WHERE ID = " + QString::number(id) + ";");
+    QSqlRecord record = queryModelAll->record(0);
+    uRecordEditDialog *dialog = new uRecordEditDialog(this);
+    dialog->setRecord(record, record.value("ID").toInt() - 1); //保证uniqueID不变
+    dialog->setDeleteEnabled(true); //非空数据可以删除
+    //连接信号和槽函数
+    connect(dialog, &uRecordEditDialog::recordDelete, this, &MainWindow::on_record_delete);
+    if (dialog->exec() == QDialog::Accepted) {
+        //sqlite命令更新
+        QSqlQuery query;
+        QSqlRecord curRecord = dialog->getRecord();
+        query.prepare("UPDATE schedule SET NAME = :NAME, DATE_BEGIN = :DATE_BEGIN, "
+                      "DATE_END = :DATE_END, DETAIL = :DETAIL, FINISHED = :FINISHED "
+                      "WHERE ID = :ID ");
+        query.bindValue(":NAME", curRecord.value("NAME"));
+        query.bindValue(":DATE_BEGIN", curRecord.value("DATE_BEGIN"));
+        query.bindValue(":DATE_END", curRecord.value("DATE_END"));
+        query.bindValue(":DETAIL", curRecord.value("DETAIL"));
+        query.bindValue(":FINISHED", curRecord.value("FINISHED"));
+        query.bindValue(":ID", curRecord.value("ID"));
+
+        if (!query.exec()) {
+            QMessageBox::critical(this, "错误", "修改数据失败，请重试！");
+        }
+        else {
+            queryModelUnfished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule WHERE FINISHED = 0;");
+            queryModelFished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule WHERE FINISHED = 1;");
+            queryModelAll->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule;");
+            uniqueID = queryModelAll->rowCount();
+        }
+    }
+    delete dialog;
+}
+
+void MainWindow::deleteRecord(int id)
+{
+    queryModelAll->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule;");
+    uniqueID = queryModelAll->rowCount();
+    bool more = id != uniqueID;
+    QSqlQuery query;
+    query.prepare("DELETE FROM schedule WHERE ID = :ID;");
+    query.bindValue(":ID", id);
+    query.exec();
+    if (more) {
+        query.prepare("UPDATE schedule SET ID = :id WHERE ID = :ID;");
+        query.bindValue(":id", id);
+        query.bindValue(":ID", uniqueID);
+        if (query.exec()) {
+            queryModelUnfished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule WHERE FINISHED = 0;");
+            queryModelFished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule WHERE FINISHED = 1;");
+            queryModelAll->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule;");
+            uniqueID = queryModelAll->rowCount();
+        }
+    }
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -151,14 +209,16 @@ void MainWindow::on_checkBox_end_clicked(bool checked)
 void MainWindow::on_tableView_show_unfinished_doubleClicked(const QModelIndex &index)
 {
     QSqlRecord editRecord = queryModelUnfished->record(index.row());
-    qDebug() << editRecord;
+    int id = editRecord.value("ID").toInt(); //拿到主键
+    updateRecord(id); //修改
 }
 
 
 void MainWindow::on_tableView_show_finished_doubleClicked(const QModelIndex &index)
 {
     QSqlRecord editRecord = queryModelFished->record(index.row());
-    qDebug() << editRecord;
+    int id = editRecord.value("ID").toInt(); //拿到主键
+    updateRecord(id); //修改
 }
 
 
@@ -192,5 +252,11 @@ void MainWindow::on_action_add_triggered()
         }
     }
     delete dialog;
+}
+
+
+void MainWindow::on_record_delete(int id)
+{
+    deleteRecord(id);
 }
 
