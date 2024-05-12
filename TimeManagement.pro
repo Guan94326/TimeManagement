@@ -11,13 +11,16 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    urecordeditdialog.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    urecordeditdialog.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    urecordeditdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
