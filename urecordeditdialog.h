@@ -4,7 +4,6 @@
 #include <QDialog>
 #include <QSqlRecord>
 
-
 namespace Ui {
 class uRecordEditDialog;
 }
