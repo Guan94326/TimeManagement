@@ -9,6 +9,43 @@
 #include <QSqlQuery>
 
 
+void MainWindow::openInitialFile()
+{
+    QString databaseDirPath = QCoreApplication::applicationDirPath(); //数据库路径
+    QString fileName = databaseDirPath + "\\timemanagement.db";
+    if (!QFile::exists(fileName)) {
+        newDatabaseFile(fileName);
+    }
+    else {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setDatabaseName(fileName);
+        db.open();
+    }
+
+    if (!db.isOpen()) {
+        QMessageBox::critical(this, "错误", "数据库文件打开失败，请重试！");
+    }
+    else {
+        openTable();
+    }
+}
+
+void MainWindow::newDatabaseFile(QString fileName)
+{
+    QFile file(fileName);
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(fileName);
+    db.open();
+    QSqlQuery query;
+    query.exec("CREATE TABLE [schedule]("
+               "[ID] INT PRIMARY KEY NOT NULL,"
+               "[NAME] TEXT,"
+               "[DATE_BEGIN] DATETEXT,"
+               "[DATE_END] DATETEXT,"
+               "[DETAIL] TEXT,"
+               "[FINISHED] INT);");
+}
+
 void MainWindow::openTable()
 {
     //初始化
@@ -143,6 +180,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    openInitialFile();
 }
 
 MainWindow::~MainWindow()
@@ -152,6 +190,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_action_open_new_database_triggered()
 {
+    QString databasePath = QCoreApplication::applicationDirPath(); //数据库路径
     QString fileName = QFileDialog::getOpenFileName(this, "选择一个数据库文件",
                                                     databasePath, "sqlite数据库(*.db)");
     if (fileName.isEmpty()) return;
@@ -166,7 +205,6 @@ void MainWindow::on_action_open_new_database_triggered()
     else {
         openTable();
     }
-
 }
 
 
