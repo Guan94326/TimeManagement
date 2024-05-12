@@ -227,6 +227,8 @@ void MainWindow::on_action_add_triggered()
     query.exec("SELECT * FROM schedule;");
     QSqlRecord record = query.record();
     uRecordEditDialog *dialog = new uRecordEditDialog(this);
+    record.setValue("DATE_BEGIN", QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
+    record.setValue("DATE_END", QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm"));
     dialog->setRecord(record, uniqueID);
     if (dialog->exec() == QDialog::Accepted) {
         //sqlite命令插入
