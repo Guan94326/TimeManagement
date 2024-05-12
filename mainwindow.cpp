@@ -6,6 +6,7 @@
 #include <QSqlQueryModel>
 #include <QSqlRecord>
 #include "urecordeditdialog.h"
+#include <QSqlQuery>
 
 
 void MainWindow::openTable()
@@ -21,9 +22,6 @@ void MainWindow::openTable()
     ui->tableView_show_finished->setSelectionModel(selectionModelFinished);
     queryModelAll = new QSqlQueryModel(this);
     selectionModelAll = new QItemSelectionModel(queryModelAll, this);
-
-    //保证主键唯一
-    uniqueID = queryModelAll->rowCount();
 
     //设置不可编辑和行选择
     ui->tableView_show_finished->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -77,6 +75,9 @@ void MainWindow::openTable()
                                       "开始时间");
     queryModelFished->setHeaderData(headerRecord.indexOf("DATE_END"), Qt::Horizontal,
                                       "结束时间");
+
+    //保证主键唯一
+    uniqueID = queryModelAll->rowCount();
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -163,9 +164,33 @@ void MainWindow::on_tableView_show_finished_doubleClicked(const QModelIndex &ind
 
 void MainWindow::on_action_add_triggered()
 {
-    QSqlRecord record = queryModelAll->record();
+    QSqlQuery query;
+    query.exec("SELECT * FROM schedule;");
+    QSqlRecord record = query.record();
     uRecordEditDialog *dialog = new uRecordEditDialog(this);
     dialog->setRecord(record, uniqueID);
-    dialog->show();
+    if (dialog->exec() == QDialog::Accepted) {
+        //sqlite命令插入
+        QSqlRecord curRecord = dialog->getRecord();
+        query.prepare("INSERT INTO schedule(NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID) "
+                      "VALUES(:NAME, :DATE_BEGIN, :DATE_END, :DETAIL, :FINISHED, :ID);");
+        query.bindValue(":NAME", curRecord.value("NAME"));
+        query.bindValue(":DATE_BEGIN", curRecord.value("DATE_BEGIN"));
+        query.bindValue(":DATE_END", curRecord.value("DATE_END"));
+        query.bindValue(":DETAIL", curRecord.value("DETAIL"));
+        query.bindValue(":FINISHED", curRecord.value("FINISHED"));
+        query.bindValue(":ID", curRecord.value("ID"));
+
+        if (!query.exec()) {
+            QMessageBox::critical(this, "错误", "插入数据失败，请重试！");
+        }
+        else {
+            queryModelUnfished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule WHERE FINISHED = 0;");
+            queryModelFished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule WHERE FINISHED = 1;");
+            queryModelAll->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule;");
+            uniqueID = queryModelAll->rowCount();
+        }
+    }
+    delete dialog;
 }
 
