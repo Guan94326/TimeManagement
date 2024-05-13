@@ -16,7 +16,11 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>编辑日程</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resource.qrc">
+    <normaloff>:/timemanagement_icon.ico</normaloff>:/timemanagement_icon.ico</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_7">
    <item>
@@ -321,7 +325,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>pushButton_ok</sender>

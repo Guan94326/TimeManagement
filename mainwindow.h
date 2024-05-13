@@ -22,6 +22,7 @@ private:
         NAME = 0, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID
     };
     int uniqueID = 0;
+    int nameWidth = 480;
 
 private:
     QSqlDatabase db;
@@ -42,6 +43,9 @@ private:
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+signals:
+    void sizeChanged();
 
 private slots:
     void on_action_open_new_database_triggered();
@@ -67,7 +71,21 @@ private slots:
 private slots:
     void on_record_delete(int id);
 
+    void on_tableView_show_unfinished_iconSizeChanged(const QSize &size);
+
+    void on_pushButton_u_begin_clicked();
+
+    void on_pushButton_u_end_clicked();
+
+    void on_pushButton_begin_clicked();
+
+    void on_pushButton_end_clicked();
+
 private:
     Ui::MainWindow *ui;
+
+    // QWidget interface
+protected:
+    virtual void resizeEvent(QResizeEvent *event) override;
 };
 #endif // MAINWINDOW_H

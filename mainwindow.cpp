@@ -78,15 +78,6 @@ void MainWindow::openTable()
     ui->tableView_show_finished->setColumnHidden(FINISHED, true);
     ui->tableView_show_finished->setColumnHidden(ID, true);
 
-    //设置列宽
-    int nameWidth = ui->tableView_show_unfinished->width() - 400;
-    ui->tableView_show_unfinished->setColumnWidth(NAME, nameWidth);
-    ui->tableView_show_unfinished->setColumnWidth(DATE_BEGIN, 180);
-    ui->tableView_show_unfinished->setColumnWidth(DATE_END, 180);
-    ui->tableView_show_finished->setColumnWidth(NAME, nameWidth);
-    ui->tableView_show_finished->setColumnWidth(DATE_BEGIN, 180);
-    ui->tableView_show_finished->setColumnWidth(DATE_END, 180);
-
     //设置组件为可用状态
     ui->checkBox_u_begin->setEnabled(true);
     ui->checkBox_u_end->setEnabled(true);
@@ -111,6 +102,14 @@ void MainWindow::openTable()
                                       "开始时间");
     queryModelFished->setHeaderData(headerRecord.indexOf("DATE_END"), Qt::Horizontal,
                                       "结束时间");
+
+    //设置列宽
+    ui->tableView_show_unfinished->setColumnWidth(NAME, nameWidth);
+    ui->tableView_show_unfinished->setColumnWidth(DATE_BEGIN, 180);
+    ui->tableView_show_unfinished->setColumnWidth(DATE_END, 180);
+    ui->tableView_show_finished->setColumnWidth(NAME, nameWidth);
+    ui->tableView_show_finished->setColumnWidth(DATE_BEGIN, 180);
+    ui->tableView_show_finished->setColumnWidth(DATE_END, 180);
 
     //保证主键唯一
     uniqueID = queryModelAll->rowCount();
@@ -297,5 +296,68 @@ void MainWindow::on_action_add_triggered()
 void MainWindow::on_record_delete(int id)
 {
     deleteRecord(id);
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    nameWidth = this->width() - 620;
+    ui->tableView_show_unfinished->setColumnWidth(NAME, nameWidth);
+    ui->tableView_show_unfinished->setColumnWidth(DATE_BEGIN, 180);
+    ui->tableView_show_unfinished->setColumnWidth(DATE_END, 180);
+    ui->tableView_show_finished->setColumnWidth(NAME, nameWidth);
+    ui->tableView_show_finished->setColumnWidth(DATE_BEGIN, 180);
+    ui->tableView_show_finished->setColumnWidth(DATE_END, 180);
+    this->QWidget::resizeEvent(event);
+}
+
+void MainWindow::on_pushButton_u_begin_clicked()
+{
+    if (ui->radioButton_u_asc->isChecked()) {
+        queryModelUnfished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID "
+                                     "FROM schedule WHERE FINISHED = 0 ORDER BY DATE_BEGIN ASC;");
+    }
+    else {
+        queryModelUnfished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID "
+                                     "FROM schedule WHERE FINISHED = 0 ORDER BY DATE_BEGIN DESC;");
+    }
+}
+
+
+void MainWindow::on_pushButton_u_end_clicked()
+{
+    if (ui->radioButton_u_asc->isChecked()) {
+        queryModelUnfished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID "
+                                     "FROM schedule WHERE FINISHED = 0 ORDER BY DATE_END ASC;");
+    }
+    else {
+        queryModelUnfished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID "
+                                     "FROM schedule WHERE FINISHED = 0 ORDER BY DATE_END DESC;");
+    }
+}
+
+
+void MainWindow::on_pushButton_begin_clicked()
+{
+    if (ui->radioButton_asc->isChecked()) {
+        queryModelFished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID "
+                                     "FROM schedule WHERE FINISHED = 1 ORDER BY DATE_BEGIN ASC;");
+    }
+    else {
+        queryModelFished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID "
+                                     "FROM schedule WHERE FINISHED = 1 ORDER BY DATE_BEGIN DESC;");
+    }
+}
+
+
+void MainWindow::on_pushButton_end_clicked()
+{
+    if (ui->radioButton_asc->isChecked()) {
+        queryModelFished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID "
+                                   "FROM schedule WHERE FINISHED = 1 ORDER BY DATE_END ASC;");
+    }
+    else {
+        queryModelFished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID "
+                                   "FROM schedule WHERE FINISHED = 1 ORDER BY DATE_END DESC;");
+    }
 }
 
