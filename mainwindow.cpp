@@ -79,15 +79,6 @@ void MainWindow::openTable()
     ui->tableView_show_finished->setColumnHidden(FINISHED, true);
     ui->tableView_show_finished->setColumnHidden(ID, true);
 
-    //设置列宽
-    int nameWidth = ui->tableView_show_unfinished->width() - 400;
-    ui->tableView_show_unfinished->setColumnWidth(NAME, nameWidth);
-    ui->tableView_show_unfinished->setColumnWidth(DATE_BEGIN, 180);
-    ui->tableView_show_unfinished->setColumnWidth(DATE_END, 180);
-    ui->tableView_show_finished->setColumnWidth(NAME, nameWidth);
-    ui->tableView_show_finished->setColumnWidth(DATE_BEGIN, 180);
-    ui->tableView_show_finished->setColumnWidth(DATE_END, 180);
-
     //设置组件为可用状态
     ui->checkBox_u_begin->setEnabled(true);
     ui->checkBox_u_end->setEnabled(true);
@@ -112,6 +103,15 @@ void MainWindow::openTable()
                                       "开始时间");
     queryModelFished->setHeaderData(headerRecord.indexOf("DATE_END"), Qt::Horizontal,
                                       "结束时间");
+
+    //设置列宽
+    int nameWidth = ui->tableView_show_unfinished->width() - 400;
+    ui->tableView_show_unfinished->setColumnWidth(NAME, nameWidth);
+    ui->tableView_show_unfinished->setColumnWidth(DATE_BEGIN, 180);
+    ui->tableView_show_unfinished->setColumnWidth(DATE_END, 180);
+    ui->tableView_show_finished->setColumnWidth(NAME, nameWidth);
+    ui->tableView_show_finished->setColumnWidth(DATE_BEGIN, 180);
+    ui->tableView_show_finished->setColumnWidth(DATE_END, 180);
 
     //保证主键唯一
     uniqueID = queryModelAll->rowCount();
