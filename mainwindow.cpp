@@ -361,3 +361,8 @@ void MainWindow::on_pushButton_end_clicked()
     }
 }
 
+
+void MainWindow::on_tableView_show_unfinished_iconSizeChanged(const QSize &size)
+{
+}
+
