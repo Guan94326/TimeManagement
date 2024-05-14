@@ -171,6 +171,12 @@ void MainWindow::deleteRecord(int id)
             uniqueID = queryModelAll->rowCount();
         }
     }
+    else {
+        queryModelUnfished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule WHERE FINISHED = 0;");
+        queryModelFished->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule WHERE FINISHED = 1;");
+        queryModelAll->setQuery("SELECT NAME, DATE_BEGIN, DATE_END, DETAIL, FINISHED, ID FROM schedule;");
+        uniqueID = queryModelAll->rowCount();
+    }
 }
 
 MainWindow::MainWindow(QWidget *parent)
